@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: 'Georgia', serif;
+  --font-body: 'system-ui', sans-serif;
+}
+
+body {
+  background-color: theme('colors.paper');
+  color: theme('colors.ink');
+}
