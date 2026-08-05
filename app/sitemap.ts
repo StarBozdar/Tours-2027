@@ -13,6 +13,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 1
     },
+    { url: `${BASE_URL}/about`, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE_URL}/privacy`, changeFrequency: 'yearly', priority: 0.1 },
+    { url: `${BASE_URL}/terms`, changeFrequency: 'yearly', priority: 0.1 },
+    { url: `${BASE_URL}/disclaimer`, changeFrequency: 'yearly', priority: 0.1 },
     ...tours.map((tour) => ({
       url: `${BASE_URL}/tours/${tour.slug}`,
       lastModified: new Date(tour.lastUpdated),

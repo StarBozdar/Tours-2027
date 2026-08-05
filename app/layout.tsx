@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-body antialiased">
-        <header className="border-b border-black/10">
+        <header className="border-b border-black/10 sticky top-0 bg-paper/95 backdrop-blur z-50">
           <div className="max-w-5xl mx-auto px-4 py-5 flex items-center justify-between">
             <a href="/" className="font-display text-2xl font-bold tracking-tight">
               2027<span className="text-accent">.</span>tours
@@ -48,7 +48,13 @@ export default function RootLayout({
         </header>
         <main className="max-w-5xl mx-auto px-4 py-10">{children}</main>
         <footer className="border-t border-black/10 mt-20">
-          <div className="max-w-5xl mx-auto px-4 py-8 text-sm text-muted">
+          <div className="max-w-5xl mx-auto px-4 py-10 text-sm text-muted">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6">
+              <a href="/about" className="hover:text-ink">About</a>
+              <a href="/privacy" className="hover:text-ink">Privacy Policy</a>
+              <a href="/terms" className="hover:text-ink">Terms</a>
+              <a href="/disclaimer" className="hover:text-ink">Disclaimer</a>
+            </div>
             <p>&copy; {new Date().getFullYear()} 2027.tours — Independent tour update tracker. Not affiliated with any artist or ticketing platform.</p>
           </div>
         </footer>
