@@ -19,6 +19,7 @@ export type TourFrontmatter = {
   status: TourStatus
   lastUpdated: string
   genre?: string
+  primaryKeyword?: string
   dates: TourDate[]
   slug: string
 }

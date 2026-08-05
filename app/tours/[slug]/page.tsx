@@ -15,8 +15,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const { frontmatter } = getTourBySlug(params.slug)
+    const primaryKeyword = frontmatter.primaryKeyword || `${frontmatter.artist} Tour 2027`
     return {
-      title: `${frontmatter.artist} 2027 Tour Dates & Updates | 2027.tours`,
+      title: `${primaryKeyword}: Dates, Tickets & News | 2027.tours`,
       description: `Latest updates on ${frontmatter.artist}'s ${frontmatter.tourName}: dates, venues, and status.`
     }
   } catch {
@@ -40,6 +41,7 @@ export default function TourPage({ params }: { params: { slug: string } }) {
   }
 
   const { frontmatter, content } = tour!
+  const primaryKeyword = frontmatter.primaryKeyword || `${frontmatter.artist} Tour 2027`
 
   return (
     <article>
@@ -49,6 +51,7 @@ export default function TourPage({ params }: { params: { slug: string } }) {
           {frontmatter.status}
         </span>
       </div>
+      <h2 className="font-display text-lg font-semibold text-accent mb-3">{primaryKeyword}</h2>
       <p className="text-muted mb-6">{frontmatter.tourName} — Updated {frontmatter.lastUpdated}</p>
 
       {frontmatter.dates?.length > 0 && (
