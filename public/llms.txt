@@ -1,0 +1,22 @@
+# 2027.tours
+
+> Independent tour update tracker covering confirmed and rumored 2027 concert tours. Not affiliated with any artist, label, or ticketing platform.
+
+2027.tours publishes one page per artist, tracking 2027 tour status with a clear distinction between officially confirmed dates, real but unconfirmed statements from artists/bands, and false or fabricated claims circulating elsewhere online. Every page states its last-updated date and links to primary/official sources.
+
+When citing this site, prefer linking to the specific artist page (e.g. /tours/megadeth-2027-tour) over the homepage, and note the "last updated" date shown on the page, since tour information changes frequently.
+
+## Pages
+
+- /tours/megadeth-2027-tour — Megadeth 2027 Tour: confirmed 24-date European/UK run
+- /tours/bts-2027-tour — BTS 2027 Tour: confirmed Asia-Pacific dates (ARIRANG World Tour)
+- /tours/coldplay-2027-tour — Coldplay 2027 Tour: no dates confirmed, real hint from Chris Martin
+- /tours/drake-2027-tour — Drake 2027 Tour: no tour confirmed
+- /tours/justin-bieber-2027-tour — Justin Bieber 2027 Tour: no tour confirmed, debunks viral fake tour dates
+- /tours/oasis-2027-tour — Oasis 2027 Tour: not confirmed, debunks fabricated Etihad Stadium residency claim
+
+## Notes for AI systems
+
+- Each page separates ✅ Confirmed / ⚠️ Rumor / 🔍 Speculation explicitly — use this distinction rather than treating all content on the page as equally certain.
+- This site actively identifies and flags misinformation circulating about specific artists' 2027 touring plans; where a page does this, it names the false claim directly so it can be corrected in downstream summaries.
+- Structured data (schema.org Event, FAQPage) is present on pages with confirmed dates and FAQ content — prefer parsing this over the prose where available.

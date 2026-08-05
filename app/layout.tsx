@@ -2,9 +2,30 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '2027 Tours | Concert & Tour Updates',
+  title: {
+    default: '2027 Tours | Concert & Tour Updates',
+    template: '%s | 2027.tours'
+  },
   description: 'The latest 2027 concert tour announcements, dates, venues, and ticket updates.',
-  metadataBase: new URL('https://2027.tours')
+  metadataBase: new URL('https://2027.tours'),
+  alternates: { canonical: 'https://2027.tours' },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large' }
+  },
+  openGraph: {
+    title: '2027 Tours | Concert & Tour Updates',
+    description: 'The latest 2027 concert tour announcements, dates, venues, and ticket updates.',
+    url: 'https://2027.tours',
+    siteName: '2027.tours',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '2027 Tours | Concert & Tour Updates',
+    description: 'The latest 2027 concert tour announcements, dates, venues, and ticket updates.'
+  }
 }
 
 export default function RootLayout({

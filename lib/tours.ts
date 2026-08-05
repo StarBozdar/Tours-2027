@@ -13,6 +13,11 @@ export type TourDate = {
   ticketLink?: string
 }
 
+export type TourFAQ = {
+  q: string
+  a: string
+}
+
 export type TourFrontmatter = {
   artist: string
   tourName: string
@@ -21,6 +26,7 @@ export type TourFrontmatter = {
   genre?: string
   primaryKeyword?: string
   dates: TourDate[]
+  faqs?: TourFAQ[]
   slug: string
 }
 
