@@ -8,6 +8,13 @@ const statusColors: Record<string, string> = {
   rumored: 'bg-gray-100 text-gray-700'
 }
 
+const statusBorderColors: Record<string, string> = {
+  confirmed: 'border-l-green-500',
+  rescheduled: 'border-l-yellow-500',
+  cancelled: 'border-l-red-500',
+  rumored: 'border-l-gray-300'
+}
+
 function daysUntil(dateStr: string): number {
   const target = new Date(dateStr + 'T00:00:00Z').getTime()
   const now = Date.now()
@@ -23,7 +30,7 @@ export default function TourCard({ tour }: { tour: TourFrontmatter }) {
   return (
     <Link
       href={`/tours/${tour.slug}`}
-      className="group block border border-black/10 rounded-xl p-5 bg-white hover:border-accent/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+      className={`group block border border-l-4 border-black/10 ${statusBorderColors[tour.status] || 'border-l-gray-300'} rounded-xl p-5 bg-white hover:border-accent/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { CheckCircle2, SearchX, Link2, ShieldCheck, HelpCircle, Mail } from 'lucide-react'
 import { getAllTours } from '@/lib/tours'
 import { homepageFaqs } from '@/lib/homepageFaqs'
 import JsonLd from '@/components/JsonLd'
@@ -10,6 +11,10 @@ export const metadata: Metadata = {
   title: '2027 Concert Tours: Confirmed Dates, Tickets & Tour News',
   description:
     'Track every confirmed and rumored 2027 concert tour in one place. Real dates, official ticket links, and honest status updates — no fabricated schedules.'
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-semibold tracking-widest uppercase text-accent mb-2">{children}</p>
 }
 
 export default function HomePage() {
@@ -56,49 +61,69 @@ export default function HomePage() {
       <JsonLd data={faqLd} />
 
       {/* Hero */}
-      <section className="mb-4 pt-6 pb-12 border-b border-black/10 -mx-4 px-4 sm:mx-0 sm:px-0 sm:border-0 sm:pb-0">
-        <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight max-w-2xl">
-          Find the latest 2027 concert tours
-        </h1>
-        <p className="text-muted mt-4 max-w-xl text-lg">
-          Real dates when they're confirmed. Honest "nothing announced yet" when they're not.
-          No fabricated schedules, ever.
-        </p>
+      <section className="relative -mx-4 px-4 sm:mx-0 sm:px-0 pt-10 pb-14 sm:pb-16 mb-4 overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl pointer-events-none"
+        />
+        <div
+          aria-hidden
+          className="absolute -top-10 right-0 w-64 h-64 rounded-full bg-accent/5 blur-3xl pointer-events-none"
+        />
+        <div className="relative animate-fade-in-up">
+          <h1 className="font-display text-4xl sm:text-6xl font-bold tracking-tight max-w-2xl leading-[1.1]">
+            Find the latest <span className="text-accent">2027</span> concert tours
+          </h1>
+          <p className="text-muted mt-5 max-w-xl text-lg leading-relaxed">
+            Real dates when they're confirmed. Honest "nothing announced yet" when they're not.
+            No fabricated schedules, ever.
+          </p>
 
-        <div className="flex items-center gap-6 mt-6 text-sm text-muted">
-          <span>
-            <strong className="text-ink font-semibold">{tours.length}</strong> artists tracked
-          </span>
-          <span>
-            <strong className="text-ink font-semibold">{confirmedCount}</strong> with confirmed dates
-          </span>
-          <span>
-            <strong className="text-ink font-semibold">{totalDates}</strong> tour dates listed
-          </span>
+          <div className="flex items-center gap-3 mt-8 flex-wrap">
+            <div className="bg-white border border-black/10 rounded-xl px-4 py-2.5 shadow-sm">
+              <span className="text-lg font-bold text-ink">{tours.length}</span>
+              <span className="text-xs text-muted ml-1.5">artists tracked</span>
+            </div>
+            <div className="bg-white border border-black/10 rounded-xl px-4 py-2.5 shadow-sm">
+              <span className="text-lg font-bold text-green-600">{confirmedCount}</span>
+              <span className="text-xs text-muted ml-1.5">with confirmed dates</span>
+            </div>
+            <div className="bg-white border border-black/10 rounded-xl px-4 py-2.5 shadow-sm">
+              <span className="text-lg font-bold text-ink">{totalDates}</span>
+              <span className="text-xs text-muted ml-1.5">tour dates listed</span>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Search + filter + grid */}
-      <section className="mb-16 pt-10">
+      <section className="mb-16">
         <TourExplorer tours={tours} />
       </section>
 
       {/* Crawlable summary content - confirmed tours */}
       {confirmedTours.length > 0 && (
         <section className="mb-16 py-10 border-t border-black/10">
+          <Eyebrow>Confirmed</Eyebrow>
           <h2 className="font-display text-2xl font-bold mb-4">Confirmed 2027 tour dates so far</h2>
           <p className="text-muted mb-6 max-w-2xl">
             As of {tours[0]?.lastUpdated}, {confirmedCount} of the {tours.length} artists we're tracking
             have officially confirmed 2027 tour dates{genres.length > 0 ? `, spanning genres including ${genres.join(', ')}` : ''}.
             Here's the current confirmed list:
           </p>
-          <ul className="space-y-2">
+          <ul className="grid gap-2 sm:grid-cols-2">
             {confirmedTours.map((t) => (
-              <li key={t.slug} className="text-sm">
-                <a href={`/tours/${t.slug}`} className="font-semibold text-accent hover:underline">
-                  {t.artist}
+              <li key={t.slug}>
+                <a
+                  href={`/tours/${t.slug}`}
+                  className="flex items-start gap-2.5 text-sm p-3 rounded-lg border border-black/10 bg-white hover:border-green-300 hover:bg-green-50/50 transition-colors"
+                >
+                  <CheckCircle2 size={18} className="text-green-600 shrink-0 mt-0.5" />
+                  <span>
+                    <span className="font-semibold text-ink">{t.artist}</span>
+                    <span className="text-muted"> — {t.tourName}, {t.dates.length} date{t.dates.length !== 1 ? 's' : ''}, first show {t.dates[0]?.date}</span>
+                  </span>
                 </a>
-                <span className="text-muted"> — {t.tourName}, {t.dates.length} confirmed date{t.dates.length !== 1 ? 's' : ''}, first show {t.dates[0]?.date}</span>
               </li>
             ))}
           </ul>
@@ -108,19 +133,26 @@ export default function HomePage() {
       {/* Crawlable summary content - unconfirmed / rumored */}
       {unconfirmedTours.length > 0 && (
         <section className="mb-16 py-10 border-t border-black/10">
+          <Eyebrow>Not confirmed yet</Eyebrow>
           <h2 className="font-display text-2xl font-bold mb-4">2027 tours that haven't been confirmed yet</h2>
           <p className="text-muted mb-6 max-w-2xl">
             Not every artist has announced 2027 plans yet. These pages track the real state of things —
             rumors, hints from the artist, or a plain "nothing announced" — updated as new information
             comes out.
           </p>
-          <ul className="space-y-2">
+          <ul className="grid gap-2 sm:grid-cols-2">
             {unconfirmedTours.map((t) => (
-              <li key={t.slug} className="text-sm">
-                <a href={`/tours/${t.slug}`} className="font-semibold text-accent hover:underline">
-                  {t.artist}
+              <li key={t.slug}>
+                <a
+                  href={`/tours/${t.slug}`}
+                  className="flex items-start gap-2.5 text-sm p-3 rounded-lg border border-black/10 bg-white hover:border-black/20 transition-colors"
+                >
+                  <SearchX size={18} className="text-muted shrink-0 mt-0.5" />
+                  <span>
+                    <span className="font-semibold text-ink">{t.artist}</span>
+                    <span className="text-muted capitalize"> — status: {t.status}</span>
+                  </span>
                 </a>
-                <span className="text-muted capitalize"> — status: {t.status}</span>
               </li>
             ))}
           </ul>
@@ -128,35 +160,56 @@ export default function HomePage() {
       )}
 
       {/* Why this site */}
-      <section className="mb-16 py-10 border-t border-black/10">
-        <h2 className="font-display text-2xl font-bold mb-6">Why trust this over other tour sites</h2>
-        <div className="grid gap-6 sm:grid-cols-3">
+      <section className="mb-16 py-12 -mx-4 px-4 sm:mx-0 sm:px-0 bg-black/[0.02] rounded-2xl">
+        <Eyebrow>Our approach</Eyebrow>
+        <h2 className="font-display text-2xl font-bold mb-8">Why trust this over other tour sites</h2>
+        <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <p className="font-semibold mb-1">✅ Confirmed vs. rumor, always separated</p>
-            <p className="text-sm text-muted">We never present a fan tweet as an official announcement. Every page tells you exactly how certain each piece of information is.</p>
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-3">
+              <ShieldCheck size={20} className="text-green-700" />
+            </div>
+            <p className="font-semibold mb-1.5">Confirmed vs. rumor, always separated</p>
+            <p className="text-sm text-muted leading-relaxed">We never present a fan tweet as an official announcement. Every page tells you exactly how certain each piece of information is.</p>
           </div>
           <div>
-            <p className="font-semibold mb-1">🔍 Misinformation gets called out</p>
-            <p className="text-sm text-muted">When a fake "leaked" schedule is circulating for an artist, we name it and explain why it isn't real — not just stay silent on it.</p>
+            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mb-3">
+              <SearchX size={20} className="text-amber-700" />
+            </div>
+            <p className="font-semibold mb-1.5">Misinformation gets called out</p>
+            <p className="text-sm text-muted leading-relaxed">When a fake "leaked" schedule is circulating for an artist, we name it and explain why it isn't real — not just stay silent on it.</p>
           </div>
           <div>
-            <p className="font-semibold mb-1">🔗 Official sources, every time</p>
-            <p className="text-sm text-muted">Every page links directly to the artist's official site or verified press coverage — never resale sites or unverified aggregators.</p>
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mb-3">
+              <Link2 size={20} className="text-blue-700" />
+            </div>
+            <p className="font-semibold mb-1.5">Official sources, every time</p>
+            <p className="text-sm text-muted leading-relaxed">Every page links directly to the artist's official site or verified press coverage — never resale sites or unverified aggregators.</p>
           </div>
         </div>
       </section>
 
       {/* FAQ */}
       <section className="mb-16 py-10 border-t border-black/10">
-        <h2 className="font-display text-2xl font-bold mb-6">Frequently asked questions</h2>
+        <Eyebrow>Questions</Eyebrow>
+        <div className="flex items-center gap-2 mb-6">
+          <HelpCircle size={22} className="text-accent" />
+          <h2 className="font-display text-2xl font-bold">Frequently asked questions</h2>
+        </div>
         <FAQAccordion />
       </section>
 
       {/* Newsletter */}
-      <section className="py-10 border-t border-black/10">
-        <h2 className="font-display text-2xl font-bold mb-2">Never miss a tour announcement</h2>
-        <p className="text-muted mb-5 max-w-md">Get notified when a tracked artist's tour status changes.</p>
-        <NewsletterForm />
+      <section className="py-10 mb-4">
+        <div className="rounded-2xl bg-ink text-paper p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Mail size={20} className="text-accent" />
+              <h2 className="font-display text-2xl font-bold">Never miss a tour announcement</h2>
+            </div>
+            <p className="text-paper/70 max-w-md">Get notified when a tracked artist's tour status changes.</p>
+          </div>
+          <NewsletterForm />
+        </div>
       </section>
     </div>
   )

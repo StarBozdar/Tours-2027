@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { Search, X } from 'lucide-react'
 import type { TourFrontmatter } from '@/lib/tours'
 import TourCard from './TourCard'
 
@@ -36,13 +37,23 @@ export default function TourExplorer({ tours }: { tours: TourFrontmatter[] }) {
     <div>
       {/* Search */}
       <div className="relative mb-6">
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search artists or tours..."
-          className="w-full border border-black/15 rounded-xl px-5 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent/50 bg-white"
+          className="w-full border border-black/15 rounded-xl pl-11 pr-11 py-3.5 text-base focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent/50 bg-white shadow-sm transition-shadow focus:shadow-md"
         />
+        {query && (
+          <button
+            onClick={() => setQuery('')}
+            aria-label="Clear search"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       {/* Status filter tabs */}
@@ -51,8 +62,10 @@ export default function TourExplorer({ tours }: { tours: TourFrontmatter[] }) {
           <button
             key={tab}
             onClick={() => setFilter(tab)}
-            className={`text-sm px-4 py-1.5 rounded-full font-medium transition ${
-              filter === tab ? 'bg-ink text-paper' : 'bg-black/5 text-ink/70 hover:bg-black/10'
+            className={`text-sm px-4 py-1.5 rounded-full font-medium transition-all duration-200 ${
+              filter === tab
+                ? 'bg-ink text-paper shadow-sm'
+                : 'bg-black/5 text-ink/70 hover:bg-black/10'
             }`}
           >
             {tab === 'all' ? `All (${tours.length})` : tab === 'confirmed' ? `Confirmed (${confirmedCount})` : 'Not Confirmed'}
@@ -65,8 +78,8 @@ export default function TourExplorer({ tours }: { tours: TourFrontmatter[] }) {
         <div className="flex items-center gap-2 mb-8 flex-wrap">
           <button
             onClick={() => setGenreFilter(null)}
-            className={`text-xs px-3 py-1 rounded-full border transition ${
-              !genreFilter ? 'border-accent text-accent' : 'border-black/10 text-muted hover:border-black/20'
+            className={`text-xs px-3 py-1 rounded-full border transition-colors duration-200 ${
+              !genreFilter ? 'border-accent text-accent bg-accent/5' : 'border-black/10 text-muted hover:border-black/20'
             }`}
           >
             All genres
@@ -75,8 +88,8 @@ export default function TourExplorer({ tours }: { tours: TourFrontmatter[] }) {
             <button
               key={g}
               onClick={() => setGenreFilter(g === genreFilter ? null : g)}
-              className={`text-xs px-3 py-1 rounded-full border transition ${
-                genreFilter === g ? 'border-accent text-accent' : 'border-black/10 text-muted hover:border-black/20'
+              className={`text-xs px-3 py-1 rounded-full border transition-colors duration-200 ${
+                genreFilter === g ? 'border-accent text-accent bg-accent/5' : 'border-black/10 text-muted hover:border-black/20'
               }`}
             >
               {g}
