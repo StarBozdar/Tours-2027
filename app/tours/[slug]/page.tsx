@@ -1,9 +1,13 @@
-import { getAllTourSlugs, getTourBySlug } from '@/lib/tours'
+import Link from 'next/link'
+import { ArrowLeft, CheckCircle2, SearchX, RefreshCw, XCircle, Calendar, Clock, HelpCircle, Ticket } from 'lucide-react'
+import { getAllTourSlugs, getAllTours, getTourBySlug } from '@/lib/tours'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Callout from '@/components/Callout'
 import JsonLd from '@/components/JsonLd'
+import FAQAccordion from '@/components/FAQAccordion'
+import RelatedTours from '@/components/RelatedTours'
 
 const BASE_URL = 'https://2027.tours'
 
@@ -53,11 +57,30 @@ const statusColors: Record<string, string> = {
   rumored: 'bg-gray-100 text-gray-700'
 }
 
+const statusBarColors: Record<string, string> = {
+  confirmed: 'bg-green-500',
+  rescheduled: 'bg-yellow-500',
+  cancelled: 'bg-red-500',
+  rumored: 'bg-gray-300'
+}
+
+const statusIcons: Record<string, typeof CheckCircle2> = {
+  confirmed: CheckCircle2,
+  rescheduled: RefreshCw,
+  cancelled: XCircle,
+  rumored: SearchX
+}
+
 const statusToEventStatus: Record<string, string> = {
   confirmed: 'https://schema.org/EventScheduled',
   rescheduled: 'https://schema.org/EventRescheduled',
   cancelled: 'https://schema.org/EventCancelled',
   rumored: 'https://schema.org/EventScheduled'
+}
+
+function daysUntil(dateStr: string): number {
+  const target = new Date(dateStr + 'T00:00:00Z').getTime()
+  return Math.ceil((target - Date.now()) / (1000 * 60 * 60 * 24))
 }
 
 export default function TourPage({ params }: { params: { slug: string } }) {
@@ -71,6 +94,8 @@ export default function TourPage({ params }: { params: { slug: string } }) {
   const { frontmatter, content } = tour!
   const primaryKeyword = frontmatter.primaryKeyword || `${frontmatter.artist} Tour 2027`
   const pageUrl = `${BASE_URL}/tours/${params.slug}`
+  const allTours = getAllTours()
+  const StatusIcon = statusIcons[frontmatter.status] || SearchX
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',
@@ -133,45 +158,98 @@ export default function TourPage({ params }: { params: { slug: string } }) {
       ))}
       {faqLd && <JsonLd data={faqLd} />}
 
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <h1 className="font-display text-3xl font-bold">{frontmatter.artist}</h1>
-        <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${statusColors[frontmatter.status] || ''}`}>
-          {frontmatter.status}
-        </span>
-      </div>
-      <h2 className="font-display text-lg font-semibold text-accent mb-3">{primaryKeyword}</h2>
-      <p className="text-muted mb-6">{frontmatter.tourName} — Updated {frontmatter.lastUpdated}</p>
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-accent transition-colors mb-6"
+      >
+        <ArrowLeft size={15} />
+        All Tours
+      </Link>
 
-      {frontmatter.dates?.length > 0 && (
-        <div className="mb-8 border border-black/10 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-black/5 text-left">
-              <tr>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">City</th>
-                <th className="px-4 py-2">Venue</th>
-                <th className="px-4 py-2">Tickets</th>
-              </tr>
-            </thead>
-            <tbody>
-              {frontmatter.dates.map((d, i) => (
-                <tr key={i} className="border-t border-black/10">
-                  <td className="px-4 py-2">{d.date}</td>
-                  <td className="px-4 py-2">{d.city}</td>
-                  <td className="px-4 py-2">{d.venue}</td>
-                  <td className="px-4 py-2">
-                    {d.ticketLink ? (
-                      <a href={d.ticketLink} className="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
-                        Get tickets
-                      </a>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
+      <div className="relative rounded-2xl border border-black/10 bg-white overflow-hidden mb-8 animate-fade-in-up">
+        <div className={`h-1.5 w-full ${statusBarColors[frontmatter.status] || 'bg-gray-300'}`} />
+        <div className="p-6 sm:p-8">
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <h1 className="font-display text-3xl sm:text-4xl font-bold">{frontmatter.artist}</h1>
+            <span
+              className={`shrink-0 inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-medium capitalize ${statusColors[frontmatter.status] || ''}`}
+            >
+              <StatusIcon size={14} />
+              {frontmatter.status}
+            </span>
+          </div>
+          <h2 className="font-display text-lg font-semibold text-accent mb-3">{primaryKeyword}</h2>
+          <div className="flex items-center gap-1.5 text-sm text-muted">
+            <Clock size={14} />
+            <span>{frontmatter.tourName} — Updated {frontmatter.lastUpdated}</span>
+          </div>
+        </div>
+      </div>
+
+      {frontmatter.dates?.length > 0 ? (
+        <div className="mb-10 border border-black/10 rounded-xl overflow-hidden shadow-sm">
+          <div className="flex items-center gap-2 bg-black/[0.03] px-4 py-3 border-b border-black/10">
+            <Calendar size={16} className="text-accent" />
+            <span className="text-sm font-semibold">Tour dates</span>
+            <span className="text-xs text-muted ml-auto">{frontmatter.dates.length} show{frontmatter.dates.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-black/[0.02] text-left">
+                <tr>
+                  <th className="px-4 py-2.5 font-medium text-muted">Date</th>
+                  <th className="px-4 py-2.5 font-medium text-muted">City</th>
+                  <th className="px-4 py-2.5 font-medium text-muted">Venue</th>
+                  <th className="px-4 py-2.5 font-medium text-muted">Tickets</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {frontmatter.dates.map((d, i) => {
+                  const days = daysUntil(d.date)
+                  const soon = days >= 0 && days <= 30
+                  return (
+                    <tr key={i} className="border-t border-black/10 hover:bg-accent/[0.03] transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {d.date}
+                        {soon && (
+                          <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full bg-accent/10 text-accent font-medium">
+                            {days === 0 ? 'Today' : `${days}d`}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">{d.city}</td>
+                      <td className="px-4 py-3">{d.venue}</td>
+                      <td className="px-4 py-3">
+                        {d.ticketLink ? (
+                          <a
+                            href={d.ticketLink}
+                            className="inline-flex items-center gap-1 text-accent hover:underline font-medium"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Ticket size={14} />
+                            Tickets
+                          </a>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-10 flex items-start gap-3 border border-black/10 rounded-xl p-5 bg-black/[0.02]">
+          <SearchX size={20} className="text-muted shrink-0 mt-0.5" />
+          <div>
+            <p className="font-semibold text-sm">No dates announced yet</p>
+            <p className="text-sm text-muted mt-0.5">
+              We'll add real dates here the moment they're officially confirmed — no placeholders, no guesses.
+            </p>
+          </div>
         </div>
       )}
 
@@ -180,18 +258,19 @@ export default function TourPage({ params }: { params: { slug: string } }) {
       </div>
 
       {frontmatter.faqs && frontmatter.faqs.length > 0 && (
-        <div className="mt-10 pt-6 border-t border-black/10">
-          <h2 className="font-display text-2xl font-bold mb-4">Frequently asked questions</h2>
-          <div className="space-y-4">
-            {frontmatter.faqs.map((f, i) => (
-              <div key={i} className="border border-black/10 rounded-lg p-4">
-                <p className="font-semibold mb-1">{f.q}</p>
-                <p className="text-sm text-ink/80">{f.a}</p>
-              </div>
-            ))}
+        <div className="mt-10 pt-8 border-t border-black/10">
+          <div className="flex items-center gap-2 mb-5">
+            <HelpCircle size={20} className="text-accent" />
+            <h2 className="font-display text-2xl font-bold">Frequently asked questions</h2>
           </div>
+          <FAQAccordion faqs={frontmatter.faqs} />
         </div>
       )}
+
+      <div className="mt-10 pt-8 border-t border-black/10">
+        <h2 className="font-display text-2xl font-bold mb-5">Other 2027 tours we're tracking</h2>
+        <RelatedTours currentSlug={params.slug} allTours={allTours} />
+      </div>
     </article>
   )
 }
