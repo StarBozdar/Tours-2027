@@ -2,6 +2,7 @@ import { getAllTourSlugs, getTourBySlug } from '@/lib/tours'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Callout from '@/components/Callout'
 
 export async function generateStaticParams() {
   return getAllTourSlugs().map((slug) => ({ slug }))
@@ -83,8 +84,8 @@ export default function TourPage({ params }: { params: { slug: string } }) {
         </div>
       )}
 
-      <div className="prose prose-neutral max-w-none">
-        <MDXRemote source={content} />
+      <div className="prose prose-neutral max-w-none prose-headings:font-display prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:border-b prose-h2:border-black/10 prose-h2:pb-2 prose-h3:text-lg prose-h3:mt-6 prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-ink prose-table:text-sm prose-blockquote:border-accent prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:text-muted">
+        <MDXRemote source={content} components={{ Callout }} />
       </div>
     </article>
   )
