@@ -1,12 +1,24 @@
+import type { Metadata } from 'next'
 import { getAllTours } from '@/lib/tours'
+import { homepageFaqs } from '@/lib/homepageFaqs'
 import JsonLd from '@/components/JsonLd'
 import TourExplorer from '@/components/TourExplorer'
 import FAQAccordion from '@/components/FAQAccordion'
 import NewsletterForm from '@/components/NewsletterForm'
 
+export const metadata: Metadata = {
+  title: '2027 Concert Tours: Confirmed Dates, Tickets & Tour News',
+  description:
+    'Track every confirmed and rumored 2027 concert tour in one place. Real dates, official ticket links, and honest status updates — no fabricated schedules.'
+}
+
 export default function HomePage() {
   const tours = getAllTours()
   const confirmedCount = tours.filter((t) => t.status === 'confirmed').length
+  const confirmedTours = tours.filter((t) => t.status === 'confirmed')
+  const unconfirmedTours = tours.filter((t) => t.status !== 'confirmed')
+  const genres = Array.from(new Set(tours.map((t) => t.genre).filter(Boolean) as string[]))
+  const totalDates = tours.reduce((sum, t) => sum + (t.dates?.length || 0), 0)
 
   const websiteLd = {
     '@context': 'https://schema.org',
@@ -27,10 +39,21 @@ export default function HomePage() {
     }))
   }
 
+  const faqLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: homepageFaqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a }
+    }))
+  }
+
   return (
     <div>
       <JsonLd data={websiteLd} />
       {tours.length > 0 && <JsonLd data={itemListLd} />}
+      <JsonLd data={faqLd} />
 
       {/* Hero */}
       <section className="mb-4 pt-6 pb-12 border-b border-black/10 -mx-4 px-4 sm:mx-0 sm:px-0 sm:border-0 sm:pb-0">
@@ -49,6 +72,9 @@ export default function HomePage() {
           <span>
             <strong className="text-ink font-semibold">{confirmedCount}</strong> with confirmed dates
           </span>
+          <span>
+            <strong className="text-ink font-semibold">{totalDates}</strong> tour dates listed
+          </span>
         </div>
       </section>
 
@@ -56,6 +82,50 @@ export default function HomePage() {
       <section className="mb-16 pt-10">
         <TourExplorer tours={tours} />
       </section>
+
+      {/* Crawlable summary content - confirmed tours */}
+      {confirmedTours.length > 0 && (
+        <section className="mb-16 py-10 border-t border-black/10">
+          <h2 className="font-display text-2xl font-bold mb-4">Confirmed 2027 tour dates so far</h2>
+          <p className="text-muted mb-6 max-w-2xl">
+            As of {tours[0]?.lastUpdated}, {confirmedCount} of the {tours.length} artists we're tracking
+            have officially confirmed 2027 tour dates{genres.length > 0 ? `, spanning genres including ${genres.join(', ')}` : ''}.
+            Here's the current confirmed list:
+          </p>
+          <ul className="space-y-2">
+            {confirmedTours.map((t) => (
+              <li key={t.slug} className="text-sm">
+                <a href={`/tours/${t.slug}`} className="font-semibold text-accent hover:underline">
+                  {t.artist}
+                </a>
+                <span className="text-muted"> — {t.tourName}, {t.dates.length} confirmed date{t.dates.length !== 1 ? 's' : ''}, first show {t.dates[0]?.date}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Crawlable summary content - unconfirmed / rumored */}
+      {unconfirmedTours.length > 0 && (
+        <section className="mb-16 py-10 border-t border-black/10">
+          <h2 className="font-display text-2xl font-bold mb-4">2027 tours that haven't been confirmed yet</h2>
+          <p className="text-muted mb-6 max-w-2xl">
+            Not every artist has announced 2027 plans yet. These pages track the real state of things —
+            rumors, hints from the artist, or a plain "nothing announced" — updated as new information
+            comes out.
+          </p>
+          <ul className="space-y-2">
+            {unconfirmedTours.map((t) => (
+              <li key={t.slug} className="text-sm">
+                <a href={`/tours/${t.slug}`} className="font-semibold text-accent hover:underline">
+                  {t.artist}
+                </a>
+                <span className="text-muted capitalize"> — status: {t.status}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Why this site */}
       <section className="mb-16 py-10 border-t border-black/10">
