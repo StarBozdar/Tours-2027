@@ -106,6 +106,23 @@ export default function TourPage({ params }: { params: { slug: string } }) {
     ]
   }
 
+  const webPageLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: primaryKeyword,
+    url: pageUrl,
+    dateModified: frontmatter.lastUpdated,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: '2027.tours',
+      url: BASE_URL
+    },
+    about: {
+      '@type': 'MusicGroup',
+      name: frontmatter.artist
+    }
+  }
+
   const eventLd =
     frontmatter.dates?.length > 0
       ? frontmatter.dates.map((d) => ({
@@ -115,10 +132,14 @@ export default function TourPage({ params }: { params: { slug: string } }) {
           startDate: d.date,
           eventStatus: statusToEventStatus[frontmatter.status] || 'https://schema.org/EventScheduled',
           eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+          image: [`${BASE_URL}/tours/${params.slug}/opengraph-image`],
           location: {
             '@type': 'Place',
             name: d.venue,
-            address: d.city
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: d.city
+            }
           },
           performer: {
             '@type': 'MusicGroup',
@@ -153,6 +174,7 @@ export default function TourPage({ params }: { params: { slug: string } }) {
   return (
     <article>
       <JsonLd data={breadcrumbLd} />
+      <JsonLd data={webPageLd} />
       {eventLd.map((e, i) => (
         <JsonLd key={i} data={e} />
       ))}

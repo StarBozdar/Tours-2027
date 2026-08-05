@@ -5,11 +5,12 @@ const BASE_URL = 'https://2027.tours'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const tours = getAllTours()
+  const mostRecentUpdate = tours[0]?.lastUpdated ? new Date(tours[0].lastUpdated) : new Date()
 
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
+      lastModified: mostRecentUpdate,
       changeFrequency: 'daily',
       priority: 1
     },

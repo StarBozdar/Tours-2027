@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import NextLink from 'next/link'
 import { CheckCircle2, SearchX, Link2, ShieldCheck, HelpCircle, Mail } from 'lucide-react'
 import { getAllTours } from '@/lib/tours'
 import { homepageFaqs } from '@/lib/homepageFaqs'
@@ -114,7 +115,7 @@ export default function HomePage() {
           <ul className="grid gap-2 sm:grid-cols-2">
             {confirmedTours.map((t) => (
               <li key={t.slug}>
-                <a
+                <NextLink
                   href={`/tours/${t.slug}`}
                   className="flex items-start gap-2.5 text-sm p-3 rounded-lg border border-black/10 bg-white hover:border-green-300 hover:bg-green-50/50 transition-colors"
                 >
@@ -123,7 +124,7 @@ export default function HomePage() {
                     <span className="font-semibold text-ink">{t.artist}</span>
                     <span className="text-muted"> — {t.tourName}, {t.dates.length} date{t.dates.length !== 1 ? 's' : ''}, first show {t.dates[0]?.date}</span>
                   </span>
-                </a>
+                </NextLink>
               </li>
             ))}
           </ul>
@@ -143,7 +144,7 @@ export default function HomePage() {
           <ul className="grid gap-2 sm:grid-cols-2">
             {unconfirmedTours.map((t) => (
               <li key={t.slug}>
-                <a
+                <NextLink
                   href={`/tours/${t.slug}`}
                   className="flex items-start gap-2.5 text-sm p-3 rounded-lg border border-black/10 bg-white hover:border-black/20 transition-colors"
                 >
@@ -152,7 +153,7 @@ export default function HomePage() {
                     <span className="font-semibold text-ink">{t.artist}</span>
                     <span className="text-muted capitalize"> — status: {t.status}</span>
                   </span>
-                </a>
+                </NextLink>
               </li>
             ))}
           </ul>
