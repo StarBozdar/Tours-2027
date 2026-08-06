@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   description: 'The latest 2027 concert tour announcements, dates, venues, and ticket updates.',
   metadataBase: new URL('https://2027.tours'),
   alternates: { canonical: 'https://2027.tours' },
+  verification: {
+    google: 'zHpaHieB2SETvADltZmNbIQqPrP_HzkjoqrFkLYORs8'
+  },
   robots: {
     index: true,
     follow: true,
