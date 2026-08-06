@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Link from 'next/link'
+import Script from 'next/script'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -43,6 +44,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-body antialiased">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6G017KHLTE"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6G017KHLTE');
+          `}
+        </Script>
         <header className="border-b border-black/10 sticky top-0 bg-paper/95 backdrop-blur z-50">
           <div className="max-w-5xl mx-auto px-4 py-5 flex items-center justify-between">
             <Link href="/" className="font-display text-2xl font-bold tracking-tight">
